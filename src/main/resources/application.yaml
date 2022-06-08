@@ -1,0 +1,16 @@
+server:
+  port: ${SQLOJ_PORT:10111}
+
+spring:
+  jackson:
+    time-zone: Asia/Shanghai
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: ${SQLOJ_DB_URL:jdbc:sqlserver://judge-sqlserver-database:1433/}
+    username: test
+    password: sy123456
+mybatis:
+  mapper-locations: classpath:mapping/*Mapping.xml
+  type-aliases-package: pers.sy.sqloj.entity
+  configuration:
+    map-underscore-to-camel-case: true
