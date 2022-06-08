@@ -1,16 +1,13 @@
 version: '3'
 
 services:
-  mariadb:
-    image: sqlserver
+  judge-sqlserver-database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
     restart: always
     ports:
       - "1433:1433"
-    volumes:
-      - ./dbdata:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+#    volumes:
+#      - ./dbdata:/var/lib/mysql
     environment:
-      SQLSERVER_ROOT_PASSWORD: sy123456
-      SQLSERVER_USER: test
-      SQLSERVER_PASSWORD: sy123456
-      SQLSERVER_INITDB_SKIP_TZINFO: 1
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Sy_123456

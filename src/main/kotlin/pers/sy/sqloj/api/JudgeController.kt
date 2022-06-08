@@ -64,10 +64,11 @@ class JudgeController
             return VResponse.err(1, "密码错误")
         }
         try {
-            val ret = judgeService.judge(sql, "tempdb")
+            val ret = judgeService.judge(sql, "temp2")
             return VResponse.ok(ret)
         } catch (e: Exception) {
-            return VResponse.err(1, e.message)
+            e.printStackTrace()
+            return VResponse.err(2, e.message)
         }
     }
 }

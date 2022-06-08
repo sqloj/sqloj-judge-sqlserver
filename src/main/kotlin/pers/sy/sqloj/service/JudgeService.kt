@@ -6,6 +6,12 @@ import org.springframework.stereotype.Service
 import java.sql.ResultSetMetaData
 import java.sql.Statement
 
+val prepared = """
+IF NOT EXISTS
+    (SELECT * FROM sys.databases WHERE [name] = 'temp')
+    CREATE DATABASE temp;
+"""
+
 @Service
 class JudgeService
 @Autowired constructor(
@@ -14,19 +20,24 @@ class JudgeService
     fun exec(statement: String): List<Any>? {
         System.err.println("[LOG] exec: statement = $statement")
         return jdbcTemplate.execute { stmt: Statement ->
-            val rs = stmt.executeQuery(statement)
-            val rsmd: ResultSetMetaData = rs.metaData
-            val count: Int = rsmd.columnCount
-            val list: MutableList<Map<*, *>> =
-                ArrayList()
-            while (rs.next()) {
-                val row: MutableMap<String, Any> = HashMap()
-                for (i in 1..count) {
-                    row[rsmd.getColumnName(i)] = rs.getObject(i)
+            val ret = stmt.execute(statement)
+            if (!ret) {
+                null
+            } else {
+                val rs = stmt.resultSet
+                val rsmd: ResultSetMetaData = rs.metaData
+                val count: Int = rsmd.columnCount
+                val list: MutableList<Map<*, *>> =
+                    ArrayList()
+                while (rs.next()) {
+                    val row: MutableMap<String, Any> = HashMap()
+                    for (i in 1..count) {
+                        row[rsmd.getColumnName(i)] = rs.getObject(i)
+                    }
+                    list.add(row)
                 }
-                list.add(row)
+                list
             }
-            list
         }
     }
 
@@ -36,7 +47,8 @@ class JudgeService
     }
 
     fun judge(sql: String, tmpDB: String): Any? {
-        execWithoutRet("create database ${tmpDB};")
+        execWithoutRet(prepared)
+        execWithoutRet("create database ${tmpDB} COLLATE Chinese_PRC_CI_AS;")
         execWithoutRet("use ${tmpDB};")
         val list = sql.split(";")
         val ret: MutableList<Any?> = ArrayList()
