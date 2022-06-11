@@ -6,9 +6,9 @@ spring:
     time-zone: Asia/Shanghai
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: ${SQLOJ_DB_URL:jdbc:sqlserver://judge-sqlserver-database:1433}
-    username: sa
-    password: Sy_123456
+    url: ${SQLOJ_DB_URL:jdbc:sqlserver://124.221.134.229:1433}
+    username: ${SQLOJ_DB_USER:sa}
+    password: ${SQLOJ_DB_PASSWORD:SyPassWord123}
 mybatis:
   mapper-locations: classpath:mapping/*Mapping.xml
   type-aliases-package: pers.sy.sqloj.entity
