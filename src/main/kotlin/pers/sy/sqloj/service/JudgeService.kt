@@ -50,7 +50,8 @@ class JudgeService
         execWithoutRet(prepared)
         execWithoutRet("create database ${tmpDB} COLLATE Chinese_PRC_CI_AS;")
         execWithoutRet("use ${tmpDB};")
-        val list = sql.split(";")
+        val regex = Regex("""(--.*\n|#.*\n|\/\*(.|\r\n|\n)*\*\/)""")
+        val list = regex.replace(sql, "").split(";")
         val ret: MutableList<Any?> = ArrayList()
         try {
             for (l in list) {
